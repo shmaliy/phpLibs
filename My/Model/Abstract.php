@@ -336,7 +336,7 @@ class My_Model_Abstract
     	$insert = array(
     		'alias' => $alias,
     		'content' => serialize($content),
-    		'created' => time();
+    		'created' => time()
     	);
     	
     	return $this->_insert($this->_cacheTbl, $insert);

@@ -4,6 +4,7 @@ class My_Model_Abstract
 	protected $_db;
 	protected $_lang;
 	protected $_menu = "cmsmenu";
+	protected $_cacheTbl = "cache";
 	protected $_content = "cmscontent";
 	protected $_categories = "cmscategories";
 	protected $_indexation = "indexation";
@@ -105,12 +106,14 @@ class My_Model_Abstract
 			);
 	
 	protected $_menuLangTitlePosition = array('ru', 'en', 'de');
+	protected $_cache;
 	
 	public $helper;
     
     public function __construct()
     {
     	$this->_db = Zend_Registry::get('db');
+    	$this->_cache = Zend_Registry::get('cache');
     	$this->_lang = Zend_Registry::get('lang');
     	$this->helper = new myHelpers();
     }
@@ -257,8 +260,115 @@ class My_Model_Abstract
     	return $title[$this->getMenuTitlePosition()];
     }
     
+    /**
+    *
+    * Returns cache mode
+    * @return srting
+    */
+    public function getCache()
+    {
+    	return $this->_cache;
+    }
     
-	/**
+    /**
+    *
+    * Returns cache tbl name
+    * @return srting
+    */
+    public function getCacheTbl()
+    {
+    	return $this->_cacheTbl;
+    }
+
+    /**
+     * 
+     * Enabling cache
+     * @return string
+     */
+    public function enableCache()
+    {
+    	if(file_put_contents('cache.ini', 'cache = "true"'))
+    	{
+    		return 'success';
+    	} else {
+    		return 'error';
+    	}
+    }
+    
+    /**
+     * 
+     * Disabling cache
+     * @return string
+     */
+    public function disableCache()
+    {
+    	if(file_put_contents('cache.ini', 'cache = "false"'))
+    	{
+    		return 'success';
+    	} else {
+    		return 'error';
+    	}
+    }
+    
+    /**
+     * 
+     * Remove all rows in cache
+     * @return string
+     */    
+    public function clearCache()
+    {
+    	$this->_db->delete($this->_cacheTbl);
+    	return 'success';
+    }
+    
+    /**
+     * 
+     * Adding row to cache
+     * @param string $alias
+     * @param array $content
+     */
+    public function setCacheEntry($alias = null, $content = null)
+    {
+    	if (is_null($alias) && is_null($content)) {
+    		return 0;
+    	}
+    	
+    	$insert = array(
+    		'alias' => $alias,
+    		'content' => serialize($content),
+    		'created' => time();
+    	);
+    	
+    	return $this->_insert($this->_cacheTbl, $insert);
+    }
+    
+    /**
+     * 
+     * Returns array from cache
+     * @param unknown_type $alias
+     * @param unknown_type $age
+     * @return multitype:
+     */
+    public function getCacheEntry($alias = null, $age = null)
+    {
+    	if (is_null($alias) && is_null($age)) {
+    		return array();
+    	}
+    	
+    	$select = $this->_db->select();
+    	$select->from(array("cache" => $this->_cacheTbl));
+    	$select->where("cache.created >= ?", time() - $age);
+    	
+    	$item = $this->db->fetchRow($select);
+    	
+    	if(!empty($item)) {
+    		return unserialize($item['content']);
+    	} else {
+    		return array();
+    	}
+    }
+    
+    /**
 	 * 
 	 * Returns content item by alias
 	 * @param string $alias
@@ -490,6 +600,4 @@ class My_Model_Abstract
     {
     	$this->_db->delete($tbl, 'id = ' . $id);
     }
-    
-    
 }

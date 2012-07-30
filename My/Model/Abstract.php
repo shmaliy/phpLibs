@@ -329,7 +329,7 @@ class My_Model_Abstract
      */
     public function setCacheEntry($alias = null, $content = null)
     {
-    	if (is_null($alias) && is_null($content)) {
+    	if (is_null($alias) || is_null($content)) {
     		return 0;
     	}
     	
@@ -357,9 +357,9 @@ class My_Model_Abstract
     	
     	$select = $this->_db->select();
     	$select->from(array("cache" => $this->_cacheTbl));
-    	$select->where("cache.created >= ?", time() - $age);
+    	$select->where("cache.created >= ?", time() - $age*60);
     	
-    	$item = $this->db->fetchRow($select);
+    	$item = $this->_db->fetchRow($select);
     	
     	if(!empty($item)) {
     		return unserialize($item['content']);

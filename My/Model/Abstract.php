@@ -105,6 +105,14 @@ class My_Model_Abstract
 				)
 			);
 	
+	protected $_interfaceWords = array(
+		"OUR_PRODUCTION" => array(
+			"ru" => 'Наша продукция',
+			"en" => 'Our production',
+			"de" => 'Unserer Produkte'
+		)
+	);
+	
 	protected $_menuLangTitlePosition = array('ru', 'en', 'de');
 	protected $_cache;
 	
@@ -369,6 +377,15 @@ class My_Model_Abstract
     }
     
     /**
+     * Returns current interface translation
+     * @param string $alias
+     */
+    public function getInterfaceWord($alias)
+    {
+    	return $this->_interfaceWord[$alias][$this->_lang];
+    }
+    
+    /**
 	 * 
 	 * Returns content item by alias
 	 * @param string $alias
@@ -539,11 +556,29 @@ class My_Model_Abstract
     	$tree = array();
     	foreach ($items as &$item) {
     		if($item['parent_id'] == $parent) {
+    			$item['title'] = $item[$this->getCategoriesTitle()];
+    			$item['description'] = $item[$this->getCategoriesDescription()];
     			$item['childs'] = $this->_getCategoriesTree($items, $item['id']);
     			$tree[] = $item;
     		}
     	}
     	return $tree;
+    }
+    
+    /**
+     * Returns root category id
+     * @param string $alias
+     * @return integer
+     */
+    protected function _getRootCategoryIdByAlias($alias)
+    {
+    	$list = $this->_getCategoriesItems();
+    	
+    	foreach ($list as $item) {
+    		if ($item['title_alias'] == $alias && $item['parent_id'] == 0) {
+    			return $item['id'];
+    		}
+    	}
     }
     
     /**

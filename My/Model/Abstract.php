@@ -570,13 +570,15 @@ class My_Model_Abstract
      * @param string $alias
      * @return integer
      */
-    protected function _getRootCategoryIdByAlias($alias)
+    public function getRootCategoryEntryByAlias($alias)
     {
     	$list = $this->_getCategoriesItems();
     	
-    	foreach ($list as $item) {
+    	foreach ($list as &$item) {
     		if ($item['title_alias'] == $alias && $item['parent_id'] == 0) {
-    			return $item['id'];
+    			$item['title'] = $item[$this->getCategoriesTitle()];
+    			$item['description'] = $item[$this->getCategoriesDescription()];
+    			return $item;
     		}
     	}
     }

@@ -221,8 +221,11 @@ class My_Model_Abstract
     * Returns name of categories title field by current language
     * @return string
     */
-    public function getCategoriesTitle()
+    public function getCategoriesTitle($lang = null)
     {
+    	if(!is_null($lang)) {
+    		$this->_lang = $lang;
+    	}
     	return $this->_categoriesFields[$this->_lang]['title'];
     }
     
@@ -231,8 +234,11 @@ class My_Model_Abstract
     * Returns name of categories description field by current language
     * @return string
     */
-    public function getCategoriesDescription()
+    public function getCategoriesDescription($lang = null)
     {
+    	if(!is_null($lang)) {
+    		$this->_lang = $lang;
+    	}
     	return $this->_categoriesFields[$this->_lang]['description'];
     }
     
@@ -570,14 +576,19 @@ class My_Model_Abstract
      * @param string $alias
      * @return integer
      */
-    public function getRootCategoryEntryByAlias($alias)
+    public function getRootCategoryEntryByAlias($alias, $lang = null)
     {
+    	
+    	if(!is_null($lang)) {
+    		$this->_lang = $lang;
+    	}
     	$list = $this->_getCategoriesItems();
+    	
     	
     	foreach ($list as &$item) {
     		if ($item['title_alias'] == $alias && $item['parent_id'] == 0) {
-    			$item['title'] = $item[$this->getCategoriesTitle()];
-    			$item['description'] = $item[$this->getCategoriesDescription()];
+    			$item['title'] = $item[$this->getCategoriesTitle($this->_lang)];
+    			$item['description'] = $item[$this->getCategoriesDescription($this->_lang)];
     			return $item;
     		}
     	}

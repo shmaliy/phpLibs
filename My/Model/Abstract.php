@@ -594,6 +594,34 @@ class My_Model_Abstract
     	}
     }
     
+    protected function _getContentListByCategoryId($id = array(), $order = 'ordering', $orderDirection = 'asc')
+    {
+    	if (empty($id)) {
+    		return array();
+    	}
+    	
+    	$select = $this->_db->select();
+    	$select->from(
+    		array('content' => $this->_content),
+    		array(
+    			'id',
+    			'title' => $this->getContentTitle(),
+    			'introtext' => $this->getContentIntrotext(),
+    			'fulltext' => $this->getContentFulltext(),
+    			'image',
+    			'created'
+    		)
+    	);
+    	
+    	foreach ($id as $cat) {
+    		$select->orWhere('content.parent_id = ?', $cat);
+    	}
+    	$select->where('content.published = 1');
+    	$select->order($order . ' ' . $orderDirection);
+    	//echo $select;
+    	return $this->_db->fetchAll($select);
+    }
+    
     /**
      * 
      * Update hits count to content

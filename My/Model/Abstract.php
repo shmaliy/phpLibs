@@ -609,6 +609,7 @@ class My_Model_Abstract
     			'introtext' => $this->getContentIntrotext(),
     			'fulltext' => $this->getContentFulltext(),
     			'image',
+    			'images',
     			'created'
     		)
     	);

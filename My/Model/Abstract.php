@@ -124,6 +124,7 @@ class My_Model_Abstract
     	$this->_cache = Zend_Registry::get('cache');
     	$this->_lang = Zend_Registry::get('lang');
     	$this->helper = new myHelpers();
+    	
     }
     
     /**

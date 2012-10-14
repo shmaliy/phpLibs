@@ -595,6 +595,54 @@ class My_Model_Abstract
     	}
     }
     
+    /**
+    * Returns root category id
+    * @param string $alias
+    * @return integer
+    */
+    public function getDependedCategoryEntryByParent($alias, $parentId, $lang = null)
+    {
+    
+    	if(!is_null($lang)) {
+    		$this->_lang = $lang;
+    	}
+    	$list = $this->_getCategoriesItems();
+    
+    	foreach ($list as &$item) {
+    		if ($item['parent_id'] == $parentId && $item['title_alias'] == $alias) {
+    			$item['title'] = $item[$this->getCategoriesTitle($this->_lang)];
+    			$item['description'] = $item[$this->getCategoriesDescription($this->_lang)];
+    			return $item;
+    		}
+    	}
+    	
+    }
+    
+    /**
+    * Returns root category id
+    * @param string $alias
+    * @return integer
+    */
+    public function getDependedCategoriesListByParent($parentId, $lang = null)
+    {
+    	 
+    	if(!is_null($lang)) {
+    		$this->_lang = $lang;
+    	}
+    	$list = $this->_getCategoriesItems();
+    	 
+    	$items = array(); 
+    	foreach ($list as &$item) {
+    		if ($item['parent_id'] == $parentId) {
+    			$item['title'] = $item[$this->getCategoriesTitle($this->_lang)];
+    			$item['description'] = $item[$this->getCategoriesDescription($this->_lang)];
+    			$items[] = $item;
+    		}
+    	}
+    	return $items;
+    }
+    
+    
     protected function _getContentListByCategoryId($id = array(), $order = 'ordering', $orderDirection = 'asc')
     {
     	if (empty($id)) {
@@ -606,7 +654,9 @@ class My_Model_Abstract
     		array('content' => $this->_content),
     		array(
     			'id',
+    			'parent_id',
     			'title' => $this->getContentTitle(),
+    			'title_alias',
     			'introtext' => $this->getContentIntrotext(),
     			'fulltext' => $this->getContentFulltext(),
     			'image',

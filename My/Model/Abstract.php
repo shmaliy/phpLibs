@@ -427,6 +427,36 @@ class My_Model_Abstract
     	return $item;
     }
     
+    public function getContentItemInCatByAlias($alias, $parentId)
+    {
+    	$select = $this->_db->select();
+    	$select->from(
+    	array("content" => $this->_content),
+    	array(
+        			'id',
+        			'parent_id',
+        			'title' => $this->getContentTitle(),
+        			'title_alias',
+        			'introtext' => $this->getContentIntrotext(),
+        			'fulltext' => $this->getContentFulltext(),
+        			'image',
+        			'images',
+        			'hits',
+        			'created',
+        			'publish_up',
+        			'publish_down',
+        			'ordering'
+    	)
+    	);
+    	$select->where("content.title_alias = ?", $alias);
+    	$select->where("content.parent_id = ?", $parentId);
+    	$select->where("content.published = 1");
+    	$item = $this->_db->fetchRow($select);
+    	$this->_setContentHits($item['id']);
+    	 
+    	return $item;
+    }
+    
     /**
      * 
      * Returns content item by id

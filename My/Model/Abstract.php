@@ -691,7 +691,8 @@ class My_Model_Abstract
     			'fulltext' => $this->getContentFulltext(),
     			'image',
     			'images',
-    			'created'
+    			'created',
+    			'other_brands' => 'content.param7'
     		)
     	);
     	

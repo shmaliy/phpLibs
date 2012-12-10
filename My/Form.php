@@ -14,7 +14,7 @@ class My_Form extends Zend_Form
 	{
 		$sites = array(
 			'/' => '',
-			'http://global.wutmarc.com' => 'WUTMARC GLOBAL',
+			'http://wutmarc.com' => 'WUTMARC GLOBAL',
 			'http://wt.wutmarc.com' => 'WUTMARC WELDING TECHNOLOGY',
 			'http://sa.wutmarc.com' => 'WUTMARC SPECIAL ALLOYS',
 			'http://ss.wutmarc.com' => 'WUTMARC STAINLESS STEEL',

@@ -198,7 +198,7 @@ class Custom_Controller_Router_Route_Content extends Zend_Controller_Router_Rout
         $parent = $element[$tCategories['parentField']];
         $int = 10;
         while ($parent > 0) {
-        	if ($this->_cachedCategories[$parent]) {
+        	if (trim($this->_cachedCategories[$parent][$tCategories['aliasField']]) != '') {
         		$parts[] = $this->_cachedCategories[$parent][$tCategories['aliasField']];
         		$parent = $this->_cachedCategories[$parent][$tCategories['parentField']];
         	}
